@@ -84,7 +84,7 @@ sudo apt install -y python3-colcon-common-extensions python3-rosdep python3-vcst
   ros-humble-ur ros-humble-moveit ros-humble-ros-gz ros-humble-gz-ros2-control libportaudio2
 
 # 2. workspace
-git clone https://github.com/YOUR-GITHUB-USER/ur3-voice-control-rosa.git
+git clone https://github.com/Piolini-Singh/ur3-voice-control-rosa.git
 cd ur3-voice-control-rosa
 source /opt/ros/humble/setup.bash
 (cd tutorial_ws && vcs import src < dependencies.repos \
@@ -179,7 +179,7 @@ If you use this work, please cite it (the "Cite this repository" button uses
   publisher = {Zenodo},
   version   = {v1.0.0},
   doi       = {10.5281/zenodo.XXXXXXX},
-  url       = {https://github.com/YOUR-GITHUB-USER/ur3-voice-control-rosa}
+  url       = {https://github.com/Piolini-Singh/ur3-voice-control-rosa}
 }
 ```
 

@@ -38,7 +38,7 @@ simulation package is built from source in the next step, exactly as in the thes
 ## 2. Clone and build the workspace
 
 ```bash
-git clone https://github.com/YOUR-GITHUB-USER/ur3-voice-control-rosa.git
+git clone https://github.com/Piolini-Singh/ur3-voice-control-rosa.git
 cd ur3-voice-control-rosa/tutorial_ws
 
 source /opt/ros/humble/setup.bash

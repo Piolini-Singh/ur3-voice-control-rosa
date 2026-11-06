@@ -20,7 +20,7 @@ authors:
 version: "v1.0.0"
 date-released: "2026-11-06"
 license: Apache-2.0
-repository-code: "https://github.com/YOUR-GITHUB-USER/ur3-voice-control-rosa"
+repository-code: "https://github.com/Piolini-Singh/ur3-voice-control-rosa"
 keywords:
   - ROS 2
   - MoveIt 2
