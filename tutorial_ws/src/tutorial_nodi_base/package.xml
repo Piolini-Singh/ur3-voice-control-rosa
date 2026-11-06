@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>tutorial_nodi_base</name>
+  <version>1.0.0</version>
+  <description>
+    ROS 2 Humble nodes for a Universal Robots UR3: publisher/subscriber basics,
+    joint-space motion, and Cartesian motion with MoveIt 2 (reachability check,
+    straight-line execution with MoveJ fallback, keyboard/voice command interface
+    listening on /comando_vocale).
+  </description>
+  <maintainer email="m.piolini001@studenti.unibs.it">Matteo Piolini</maintainer>
+  <maintainer email="j.singh030@studenti.unibs.it">Jaspreet Singh</maintainer>
+  <license>Apache-2.0</license>
+  <author>Matteo Piolini</author>
+  <author>Jaspreet Singh</author>
+
+  <depend>rclpy</depend>
+  <depend>std_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>builtin_interfaces</depend>
+  <depend>trajectory_msgs</depend>
+  <depend>moveit_msgs</depend>
+  <depend>tf2_ros</depend>
+
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

@@ -1,0 +1,162 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800" width="1280" height="800" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <title>UR3 voice control: system architecture</title>
+  <desc>Voice agent (Whisper, ROSA, GPT-4o, four tools) publishes JSON commands on the ROS 2 topic /comando_vocale; node 08 checks reachability with node 06 and executes with node 07 through MoveIt 2 on the Gazebo digital twin or the real UR3.</desc>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#26306b"/>
+    </marker>
+    <marker id="arrO" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#e8702a"/>
+    </marker>
+    <style>
+      .t  { font-size: 17px; font-weight: 700; fill: #26306b; }
+      .s  { font-size: 13px; fill: #333a4d; }
+      .m  { font-size: 12.5px; fill: #333a4d; font-family: 'JetBrains Mono', Consolas, Menlo, monospace; }
+      .h  { font-size: 15px; font-weight: 700; letter-spacing: .06em; }
+      .box { fill: #ffffff; stroke-width: 2; }
+    </style>
+  </defs>
+
+  <!-- canvas (own background so it reads in GitHub dark mode too) -->
+  <rect x="0" y="0" width="1280" height="800" rx="14" fill="#f6f4ef"/>
+
+  <!-- ===================== VOICE AGENT ===================== -->
+  <rect x="20" y="20" width="1240" height="285" rx="14" fill="#fff6ef" stroke="#e8702a" stroke-width="2"/>
+  <text x="40" y="50" class="h" fill="#e8702a">VOICE AGENT</text>
+  <text x="168" y="50" class="s" font-style="italic">Python process in a virtualenv, outside the ROS workspace · voice_agent/</text>
+
+  <!-- Operator -->
+  <rect x="40" y="70" width="200" height="130" rx="10" class="box" stroke="#26306b"/>
+  <circle cx="72" cy="104" r="18" fill="#26306b"/>
+  <rect x="66" y="93" width="12" height="17" rx="6" fill="#fff"/>
+  <path d="M61,104 a11,11 0 0 0 22,0" fill="none" stroke="#fff" stroke-width="2"/>
+  <text x="100" y="110" class="t">Operator</text>
+  <text x="56" y="148" class="s">speaks Italian</text>
+  <text x="56" y="168" class="s">push-to-talk: ENTER to start,</text>
+  <text x="56" y="186" class="s">ENTER again to stop</text>
+
+  <!-- Whisper -->
+  <rect x="290" y="70" width="200" height="130" rx="10" class="box" stroke="#e8702a"/>
+  <text x="306" y="100" class="t">Whisper</text>
+  <text x="306" y="122" class="m">whisper-1, language=it</text>
+  <text x="306" y="150" class="s">speech → text</text>
+  <text x="306" y="170" class="s" font-style="italic">voice mode only</text>
+  <text x="306" y="188" class="m">09_agente_vocale.py</text>
+
+  <!-- ROSA + GPT-4o -->
+  <rect x="540" y="70" width="310" height="130" rx="10" class="box" stroke="#e8702a"/>
+  <text x="556" y="100" class="t">ROSA + GPT-4o</text>
+  <text x="556" y="122" class="s" font-size="12.5">NASA JPL ROS Agent (LangChain), temperature 0</text>
+  <text x="556" y="146" class="s">text → tool call(s)</text>
+  <text x="556" y="168" class="s">system prompt: persona · axis convention ·</text>
+  <text x="556" y="186" class="s">vague magnitudes · safety rule</text>
+
+  <!-- Tools -->
+  <rect x="890" y="70" width="350" height="130" rx="10" class="box" stroke="#e8702a"/>
+  <text x="906" y="96" class="t">@tool functions <tspan class="m" font-weight="400">agente_comune.py</tspan></text>
+  <text x="906" y="122" class="m">muovi_assoluto(x, y, z)    → absolute</text>
+  <text x="906" y="142" class="m">muovi_relativo(dx, dy, dz) → relative</text>
+  <text x="906" y="162" class="m">vai_in_home()              → home</text>
+  <text x="906" y="182" class="m">termina_sessione()         → fine</text>
+
+  <!-- Keyboard variant -->
+  <rect x="40" y="222" width="450" height="62" rx="10" fill="#2b1a2e"/>
+  <text x="56" y="248" font-size="14" font-weight="700" fill="#ffffff" font-family="'JetBrains Mono', Consolas, Menlo, monospace">$ keyboard mode (no microphone)</text>
+  <text x="56" y="270" font-size="12.5" fill="#9be15d" font-family="'JetBrains Mono', Consolas, Menlo, monospace">09_agente_vocale_testo.py: typed Italian text</text>
+
+  <!-- agent arrows -->
+  <line x1="240" y1="135" x2="286" y2="135" stroke="#e8702a" stroke-width="3" marker-end="url(#arrO)"/>
+  <line x1="490" y1="135" x2="536" y2="135" stroke="#e8702a" stroke-width="3" marker-end="url(#arrO)"/>
+  <line x1="850" y1="135" x2="886" y2="135" stroke="#e8702a" stroke-width="3" marker-end="url(#arrO)"/>
+  <path d="M490,253 L690,253 L690,204" fill="none" stroke="#e8702a" stroke-width="2.5" stroke-dasharray="7 5" marker-end="url(#arrO)"/>
+
+  <!-- ===================== TOPIC ===================== -->
+  <line x1="1065" y1="200" x2="1065" y2="330" stroke="#e8702a" stroke-width="3" marker-end="url(#arrO)"/>
+  <text x="1075" y="262" class="s" font-style="italic" fill="#e8702a">publish JSON</text>
+
+  <rect x="300" y="334" width="940" height="74" rx="12" fill="#e6f0f4" stroke="#155e7e" stroke-width="2.5"/>
+  <text x="320" y="364" font-size="21" font-weight="700" fill="#155e7e" font-family="'JetBrains Mono', Consolas, Menlo, monospace">/comando_vocale</text>
+  <text x="530" y="364" class="s">std_msgs/String with a JSON payload — the <tspan font-weight="700">only</tspan> link between the AI and the robot</text>
+  <text x="320" y="392" class="m">{"mode":"absolute","x":0.3,"y":-0.1,"z":0.4}  {"mode":"relative","dx":0.05,"dy":0,"dz":0}  {"mode":"home"}  {"mode":"fine"}</text>
+
+  <rect x="40" y="334" width="230" height="74" rx="12" fill="#ffffff" stroke="#155e7e" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="56" y="362" class="s" font-weight="700" fill="#155e7e">No API key? Test the</text>
+  <text x="56" y="380" class="s" font-weight="700" fill="#155e7e">robot side directly with</text>
+  <text x="56" y="398" class="m">ros2 topic pub …</text>
+  <line x1="270" y1="371" x2="296" y2="371" stroke="#155e7e" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arr)"/>
+
+  <line x1="330" y1="408" x2="330" y2="476" stroke="#26306b" stroke-width="3" marker-end="url(#arr)"/>
+  <text x="340" y="452" class="s" font-style="italic">subscribe</text>
+
+  <!-- ===================== ROS 2 WORKSPACE ===================== -->
+  <rect x="20" y="430" width="1240" height="350" rx="14" fill="#eef1f8" stroke="#26306b" stroke-width="2"/>
+  <text x="40" y="460" class="h" fill="#26306b">ROS 2 HUMBLE</text>
+  <text x="1240" y="460" text-anchor="end" class="s" font-style="italic">workspace tutorial_ws · package tutorial_nodi_base · unchanged by the AI layer</text>
+
+  <!-- Node 08 -->
+  <rect x="40" y="480" width="320" height="200" rx="10" class="box" stroke="#26306b"/>
+  <text x="56" y="508" class="t">Node 08 · interface</text>
+  <text x="56" y="528" class="m">08_interfaccia_continua</text>
+  <text x="56" y="556" class="s">-p modalita:=vocale  (listens on topic)</text>
+  <text x="56" y="576" class="s">-p modalita:=tastiera (types "X Y Z")</text>
+  <text x="56" y="602" class="s">validates JSON; relative → absolute</text>
+  <text x="56" y="620" class="s">using the current tool0 pose (TF)</text>
+  <text x="56" y="646" class="s">one motion at a time · returns HOME</text>
+  <text x="56" y="664" class="s">on "fine" or Ctrl+C</text>
+
+  <!-- Node 06 -->
+  <rect x="410" y="480" width="310" height="88" rx="10" class="box" stroke="#26306b"/>
+  <text x="426" y="506" class="t">Node 06 · reachability <tspan fill="#e8702a">PLAN</tspan></text>
+  <text x="426" y="530" class="m">/compute_cartesian_path</text>
+  <text x="426" y="552" class="s">straight line, plan only: OK if ≥ 99 % feasible</text>
+
+  <!-- Node 07 -->
+  <rect x="410" y="584" width="310" height="142" rx="10" class="box" stroke="#26306b"/>
+  <text x="426" y="610" class="t">Node 07 · execution <tspan fill="#e8702a">EXECUTE</tspan></text>
+  <text x="426" y="634" class="s">MoveL → <tspan class="m">/execute_trajectory</tspan></text>
+  <text x="426" y="654" class="s">(slowed to 10 % speed)</text>
+  <text x="426" y="676" class="s">fallback MoveJ: <tspan class="m">/compute_ik</tspan></text>
+  <text x="426" y="694" class="s">+ <tspan class="m">/move_action</tspan> · HOME in joint space</text>
+  <text x="426" y="714" class="s">wrist 2π-turn alignment (/joint_states)</text>
+
+  <line x1="360" y1="530" x2="406" y2="530" stroke="#26306b" stroke-width="2.5" marker-end="url(#arr)"/>
+  <line x1="360" y1="640" x2="406" y2="640" stroke="#26306b" stroke-width="2.5" marker-end="url(#arr)"/>
+  <text x="378" y="522" font-size="12" font-weight="700" fill="#26306b">1</text>
+  <text x="378" y="632" font-size="12" font-weight="700" fill="#26306b">2</text>
+
+  <!-- MoveIt -->
+  <rect x="770" y="550" width="180" height="110" rx="10" class="box" stroke="#26306b"/>
+  <text x="786" y="582" class="t">MoveIt 2</text>
+  <text x="786" y="604" class="m">move_group</text>
+  <text x="786" y="628" class="s">IK · collision checks ·</text>
+  <text x="786" y="646" class="s">trajectory execution</text>
+  <line x1="720" y1="524" x2="766" y2="580" stroke="#26306b" stroke-width="2.5" marker-end="url(#arr)"/>
+  <line x1="720" y1="650" x2="766" y2="628" stroke="#26306b" stroke-width="2.5" marker-end="url(#arr)"/>
+
+  <!-- Controller -->
+  <rect x="1000" y="480" width="240" height="118" rx="10" class="box" stroke="#26306b"/>
+  <text x="1016" y="506" class="t">ros2_control</text>
+  <text x="1016" y="528" class="s">simulation:</text>
+  <text x="1016" y="545" font-size="11.5" fill="#333a4d" font-family="'JetBrains Mono', Consolas, Menlo, monospace">joint_trajectory_controller</text>
+  <text x="1016" y="568" class="s">real robot:</text>
+  <text x="1016" y="585" font-size="10.4" fill="#333a4d" font-family="'JetBrains Mono', Consolas, Menlo, monospace">scaled_joint_trajectory_controller</text>
+  <line x1="950" y1="590" x2="996" y2="560" stroke="#26306b" stroke-width="2.5" marker-end="url(#arr)"/>
+
+  <!-- Targets -->
+  <rect x="1000" y="622" width="114" height="104" rx="10" fill="#155e7e"/>
+  <text x="1057" y="656" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">Gazebo</text>
+  <text x="1057" y="676" text-anchor="middle" font-size="12" fill="#e6f0f4">Fortress</text>
+  <text x="1057" y="694" text-anchor="middle" font-size="12" fill="#e6f0f4">digital twin</text>
+  <text x="1057" y="714" text-anchor="middle" font-size="11" fill="#e6f0f4">(no hardware)</text>
+
+  <rect x="1126" y="622" width="114" height="104" rx="10" fill="#26306b"/>
+  <text x="1183" y="656" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">UR3 (CB3)</text>
+  <text x="1183" y="676" text-anchor="middle" font-size="12" fill="#e6f0f4">real robot via</text>
+  <text x="1183" y="694" text-anchor="middle" font-size="12" fill="#e6f0f4">ur_robot_driver +</text>
+  <text x="1183" y="712" text-anchor="middle" font-size="12" fill="#e6f0f4">External Control</text>
+  <line x1="1080" y1="598" x2="1066" y2="619" stroke="#26306b" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="1160" y1="598" x2="1174" y2="619" stroke="#26306b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- footer -->
+  <text x="40" y="760" font-size="13.5" fill="#26306b">The language model never commands the joints: it can only <tspan font-weight="700">propose</tspan> a target on a topic, and an independent node is free to reject it.</text>
+</svg>

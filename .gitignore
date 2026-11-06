@@ -1,0 +1,38 @@
+# --- Secrets: never commit these -------------------------------------------
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+# --- Robot-specific calibration (generated per physical robot) -------------
+*calibration*.yaml
+!docs/**/*calibration*.yaml
+
+# --- ROS 2 / colcon build products -----------------------------------------
+tutorial_ws/build/
+tutorial_ws/install/
+tutorial_ws/log/
+build/
+install/
+log/
+# Upstream packages cloned with `vcs import` (see tutorial_ws/dependencies.repos)
+tutorial_ws/src/Universal_Robots_ROS2_GZ_Simulation/
+tutorial_ws/src/Universal_Robots_ROS2_Description/
+
+# --- Python ----------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+venv*/
+.venv/
+
+# --- Audio recorded by the voice agent ------------------------------------
+*.wav
+
+# --- Editors / OS ----------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+.DS_Store

@@ -1,0 +1,18 @@
+UR3 Voice Control with ROS 2 and ROSA
+Copyright 2026 Matteo Piolini and Jaspreet Singh
+
+This product was developed as a Bachelor's thesis project at the
+Laboratorio di Meccanica Applicata, Department of Mechanical and Industrial
+Engineering (DIMI), University of Brescia, Italy.
+
+It depends on, but does not redistribute, third-party software, including:
+- ROS 2 Humble (Apache-2.0 and others)            https://docs.ros.org/en/humble/
+- MoveIt 2 (BSD-3-Clause)                          https://moveit.ai/
+- Universal Robots ROS 2 driver, description and
+  Gazebo simulation packages (BSD-3-Clause)        https://github.com/UniversalRobots
+- ROSA - Robot Operating System Agent, NASA JPL    https://github.com/nasa-jpl/rosa
+- LangChain, OpenAI Python SDK                     (see their respective licenses)
+
+"Universal Robots", "UR3", "OpenAI", "GPT-4o", "Whisper" and "NASA JPL" are
+names or trademarks of their respective owners; their use here is purely
+descriptive and implies no endorsement.

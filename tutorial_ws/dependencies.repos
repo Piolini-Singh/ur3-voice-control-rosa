@@ -1,0 +1,9 @@
+# Upstream packages used for the Gazebo digital twin (as in thesis, section 2.2.2).
+# Import them with:
+#     cd tutorial_ws && vcs import src < dependencies.repos
+# They are NOT redistributed in this repository (BSD-3-Clause, Universal Robots).
+repositories:
+  Universal_Robots_ROS2_GZ_Simulation:
+    type: git
+    url: https://github.com/UniversalRobots/Universal_Robots_ROS2_GZ_Simulation.git
+    version: humble

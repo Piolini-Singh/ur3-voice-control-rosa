@@ -1,0 +1,16 @@
+# Direct Python dependencies of the voice agent.
+# Install inside a virtualenv created with --system-site-packages, so that
+# ROS 2's rclpy stays importable (see scripts/setup_venv.sh).
+#
+# Versions are those of the venv used for the thesis experiments; the full,
+# exact package set (transitive dependencies included) is in requirements.lock.
+# jpl-rosa 1.0.x pins LangChain 0.3.x; the code uses the LangChain 0.x API
+# (`from langchain.agents import tool`), so do not upgrade to LangChain 1.x.
+jpl-rosa==1.0.10
+langchain-openai==0.3.35
+openai==2.49.0
+python-dotenv==1.2.2
+# Voice mode only (09_agente_vocale.py); needs the system package libportaudio2.
+sounddevice==0.5.5
+soundfile==0.14.0
+numpy==1.26.4

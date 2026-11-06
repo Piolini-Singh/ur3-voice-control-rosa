@@ -1,0 +1,50 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata below."
+type: software
+title: "UR3 Voice Control with ROS 2 and ROSA"
+abstract: >-
+  Voice control of a Universal Robots UR3 collaborative manipulator in Italian.
+  Speech is transcribed with OpenAI Whisper and interpreted by the NASA JPL ROSA
+  agent with GPT-4o, which can only call four tools (absolute move, relative move,
+  home, end session) that publish JSON commands on a ROS 2 topic. A ROS 2 Humble
+  and MoveIt 2 pipeline checks straight-line reachability before executing each
+  motion, on a Gazebo digital twin or on the real robot. Developed as a Bachelor's
+  thesis at the University of Brescia.
+authors:
+  - family-names: Piolini
+    given-names: Matteo
+    affiliation: "University of Brescia"
+  - family-names: Singh
+    given-names: Jaspreet
+    affiliation: "University of Brescia"
+version: "v1.0.0"
+date-released: "2026-11-06"
+license: Apache-2.0
+repository-code: "https://github.com/YOUR-GITHUB-USER/ur3-voice-control-rosa"
+keywords:
+  - ROS 2
+  - MoveIt 2
+  - Universal Robots
+  - UR3
+  - voice control
+  - large language models
+  - ROSA
+  - human-robot interaction
+  - Gazebo
+  - digital twin
+references:
+  - type: thesis
+    title: >-
+      Controllo vocale della movimentazione di un manipolatore UR3 mediante ROS 2
+      integrato da IA e algoritmo di elaborazione del linguaggio naturale "ROSA"
+    authors:
+      - family-names: Piolini
+        given-names: Matteo
+      - family-names: Singh
+        given-names: Jaspreet
+    thesis-type: "Bachelor's thesis"
+    institution:
+      name: "University of Brescia, Department of Mechanical and Industrial Engineering"
+    year: 2026
+    languages:
+      - it

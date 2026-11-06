@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  secret-scan:
+    name: Secret scan (full history)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # scan every commit, not just the last one
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build:
+    name: colcon build + agent import check (ROS 2 Humble)
+    runs-on: ubuntu-22.04
+    container: ros:humble
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ROS dependencies
+        run: |
+          apt-get update
+          rosdep update --rosdistro humble
+          rosdep install --from-paths tutorial_ws/src --ignore-src -y --rosdistro humble
+
+      - name: Build tutorial_nodi_base
+        run: |
+          source /opt/ros/humble/setup.bash
+          cd tutorial_ws
+          colcon build --event-handlers console_direct+
+          source install/setup.bash
+          ros2 pkg executables tutorial_nodi_base
+
+      - name: Import the voice agent with the locked dependencies (no API key needed)
+        run: |
+          apt-get install -y python3-venv
+          source /opt/ros/humble/setup.bash
+          python3 -m venv --system-site-packages /tmp/venv
+          source /tmp/venv/bin/activate
+          pip install -r voice_agent/requirements.lock
+          cd voice_agent
+          python3 -c "import agente_comune as a; print([t.name for t in a.STRUMENTI])"
+          python3 -m py_compile 09_agente_vocale.py 09_agente_vocale_testo.py
