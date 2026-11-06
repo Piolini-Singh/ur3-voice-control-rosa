@@ -12,9 +12,15 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0   # scan every commit, not just the last one
-      - uses: gitleaks/gitleaks-action@v2
+      # gitleaks CLI instead of gitleaks-action: the action requires a paid/registered
+      # license key for repositories owned by an organization; the CLI does not.
+      - name: Run gitleaks on every commit
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_VERSION: "8.18.4"
+        run: |
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" \
+            | tar -xz gitleaks
+          ./gitleaks detect --source . --redact --verbose
 
   build:
     name: colcon build + agent import check (ROS 2 Humble)
@@ -46,7 +52,10 @@ jobs:
           source /opt/ros/humble/setup.bash
           python3 -m venv --system-site-packages /tmp/venv
           source /tmp/venv/bin/activate
-          pip install -r voice_agent/requirements.lock
+          # Ubuntu 22.04 ships setuptools 59 / packaging 21.3, too old to build the
+          # source-only ROSA dependencies (PyInputPlus, PySimpleValidate, stdiomask).
+          python3 -m pip install --upgrade pip setuptools wheel packaging
+          python3 -m pip install -r voice_agent/requirements.lock
           cd voice_agent
           python3 -c "import agente_comune as a; print([t.name for t in a.STRUMENTI])"
           python3 -m py_compile 09_agente_vocale.py 09_agente_vocale_testo.py
