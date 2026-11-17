@@ -54,7 +54,9 @@ jobs:
           source /tmp/venv/bin/activate
           # Ubuntu 22.04 ships setuptools 59 / packaging 21.3, too old to build the
           # source-only ROSA dependencies (PyInputPlus, PySimpleValidate, stdiomask).
-          python3 -m pip install --upgrade pip setuptools wheel packaging
+          # setuptools<80: newer versions build these packages too, but make pip warn
+          # about a conflict with ROS 2 colcon (which never uses this venv).
+          python3 -m pip install --upgrade pip wheel packaging "setuptools<80"
           python3 -m pip install -r voice_agent/requirements.lock
           cd voice_agent
           python3 -c "import agente_comune as a; print([t.name for t in a.STRUMENTI])"

@@ -78,30 +78,39 @@ in **[docs/prompts-and-tools.md](docs/prompts-and-tools.md)**.
 
 ## Quick start (simulation, Ubuntu 22.04 + ROS 2 Humble)
 
+The overview below is for readers who know ROS 2. If this is your first time, follow
+[docs/simulation.md](docs/simulation.md) instead: it runs one command at a time and shows the
+expected output of each step.
+
 ```bash
 # 1. system packages
 sudo apt install -y python3-colcon-common-extensions python3-rosdep python3-vcstool python3-venv \
   ros-humble-ur ros-humble-moveit ros-humble-ros-gz ros-humble-gz-ros2-control libportaudio2
 
 # 2. workspace
-git clone https://github.com/Piolini-Singh/ur3-voice-control-rosa.git
-cd ur3-voice-control-rosa
+cd ~ && git clone https://github.com/Piolini-Singh/ur3-voice-control-rosa.git
 source /opt/ros/humble/setup.bash
-(cd tutorial_ws && vcs import src < dependencies.repos \
-  && rosdep install --from-paths src --ignore-src -y --rosdistro humble && colcon build)
+cd ~/ur3-voice-control-rosa/tutorial_ws && vcs import src < dependencies.repos
+rosdep install --from-paths src --ignore-src -y --rosdistro humble && colcon build
 
-# 3. voice agent (only for the AI part)
-./scripts/setup_venv.sh && nano .env          # OPENAI_API_KEY="sk-..."
+# 3. voice agent (only for the AI part); the key is read without echoing it
+cd ~/ur3-voice-control-rosa && ./scripts/setup_venv.sh
+read -s -p "OpenAI key: " K; echo; printf 'OPENAI_API_KEY="%s"\n' "$K" > .env; unset K
 ```
 
-Then, each in its own terminal (after `source /opt/ros/humble/setup.bash && source tutorial_ws/install/setup.bash`):
+Then, each in its own terminal (after `source /opt/ros/humble/setup.bash && source ~/ur3-voice-control-rosa/tutorial_ws/install/setup.bash`):
 
 ```bash
-ros2 launch ur_simulation_gz ur_sim_control.launch.py ur_type:=ur3 launch_rviz:=false          # 1 Gazebo
-ros2 launch ur_moveit_config ur_moveit.launch.py ur_type:=ur3 use_sim_time:=true launch_rviz:=true  # 2 MoveIt
-ros2 run tutorial_nodi_base 08_interfaccia_continua --ros-args -p modalita:=vocale            # 3 node 08
-ros2 topic pub --once /comando_vocale std_msgs/msg/String "{data: '{\"mode\": \"home\"}'}"    # 4a no AI
-source venv_agente_vocale/bin/activate && python3 voice_agent/09_agente_vocale_testo.py       # 4b with AI
+# 1 Gazebo
+ros2 launch ur_simulation_gz ur_sim_control.launch.py ur_type:=ur3 launch_rviz:=false
+# 2 MoveIt
+ros2 launch ur_moveit_config ur_moveit.launch.py ur_type:=ur3 use_sim_time:=true launch_rviz:=true
+# 3 node 08, on simulation time like Gazebo and MoveIt
+ros2 run tutorial_nodi_base 08_interfaccia_continua --ros-args -p modalita:=vocale -p use_sim_time:=true
+# 4a without AI
+ros2 topic pub --once /comando_vocale std_msgs/msg/String "{data: '{\"mode\": \"home\"}'}"
+# 4b with AI
+source ~/ur3-voice-control-rosa/venv_agente_vocale/bin/activate && python3 ~/ur3-voice-control-rosa/voice_agent/09_agente_vocale_testo.py
 ```
 
 Step-by-step explanations, expected output and troubleshooting: [docs/simulation.md](docs/simulation.md).
@@ -158,6 +167,9 @@ English.
 * Requires Internet and a paid OpenAI API key; push-to-talk only (planned: local models and
   wake-word activation).
 * Commands arriving during a motion are dropped, not queued.
+* The agent does not receive the outcome of a command: it confirms what it *sent*, and may say
+  "Mi sono spostato…" even when node 06 rejected the target and the arm did not move. The
+  result printed by node 08 is authoritative (planned: a feedback topic from node 08 to the agent).
 * Validated on one UR3 CB3 with ROS 2 Humble on Ubuntu 22.04.
 
 ## Safety

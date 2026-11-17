@@ -17,5 +17,14 @@ changes to the lab code are for portability and packaging:
   dependencies aligned with the imports (added `sensor_msgs`, `builtin_interfaces`; removed the
   unused `moveit_py`, and the unused `shape_msgs`).
 * Run instructions in the agent scripts now use repository-relative paths.
+* Node 07: when planning or execution does not finish within the timeout, it now reports a
+  clear `⏱️ Timeout` message instead of crashing with `AttributeError: 'NoneType' object has
+  no attribute 'result'`. The timeout is a ROS parameter, `timeout_movimento` (default 60 s,
+  previously a fixed 20 s).
+* Nodes 06, 07 and 08: no more `rcl_shutdown already called` error when stopped with Ctrl+C.
 * Added documentation, architecture diagram, simulation guide, demo media, citation metadata,
   `requirements.lock` (exact virtualenv of the experiments) and CI.
+* Simulation guide tested from a clean Ubuntu 22.04 install; fixes from that test: full paths
+  in every command, node 08 started with `use_sim_time:=true` in simulation, typed
+  `ros2 topic echo`, `.env` written without echoing the key, and a documented limitation
+  (the agent does not receive the outcome of a command).

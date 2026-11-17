@@ -301,7 +301,8 @@ def main(args=None):
             nodo.get_logger().error(f'Impossibile completare il rientro in HOME: {errore}')
     finally:
         nodo.distruggi()
-        rclpy.shutdown()
+        if rclpy.ok():
+            rclpy.shutdown()
 
 
 if __name__ == '__main__':

@@ -137,6 +137,14 @@ class EsecuzioneMovimento(Node):
             JointState, '/joint_states', self._callback_joint_states, 10
         )
 
+        # Tempo massimo (secondi di orologio reale) di attesa per pianificazione ed
+        # esecuzione di un movimento. Per movimenti lunghi si puo' aumentare con
+        #   --ros-args -p timeout_movimento:=120.0
+        self.declare_parameter('timeout_movimento', 60.0)
+        self._timeout_movimento = float(
+            self.get_parameter('timeout_movimento').get_parameter_value().double_value
+        )
+
         self.get_logger().info('Nodo di esecuzione movimentazione avviato.')
         self.get_logger().info('Attendo i server MoveIt (move_group)...')
 
@@ -350,13 +358,15 @@ class EsecuzioneMovimento(Node):
     # --------------------------------------------------------------------
     def esegui_movimento_cartesiano(self, x, y, z, orientamento=None,
                                      max_step=0.01, fattore_velocita=0.1,
-                                     timeout=20.0):
+                                     timeout=None):
         """Calcola il percorso rettilineo verso (x, y, z) e, solo se completo
         al 100%, lo esegue davvero sui controller reali/simulati (rallentato
         di 'fattore_velocita' rispetto al calcolo a velocita' piena).
 
         Se 'orientamento' non e' specificato, viene mantenuto quello ATTUALE
         del polso per tutta la traiettoria (nessuna rotazione superflua)."""
+        if timeout is None:
+            timeout = self._timeout_movimento
 
         if orientamento is None:
             orientamento = self._orientamento_attuale()
@@ -444,7 +454,9 @@ class EsecuzioneMovimento(Node):
 
         result_future = goal_handle.get_result_async()
         rclpy.spin_until_future_complete(self, result_future, timeout_sec=timeout)
-        result = result_future.result().result
+        result, errore = self._risultato_o_timeout(result_future, timeout, 'il movimento')
+        if errore is not None:
+            return errore
 
         codice = result.error_code.val
         eseguito = (codice == MoveItErrorCodes.SUCCESS)
@@ -497,10 +509,12 @@ class EsecuzioneMovimento(Node):
         goal_msg.planning_options = planning_options
         return goal_msg
 
-    def _pianifica_esegui_giunti(self, posizioni_giunti, timeout=20.0):
+    def _pianifica_esegui_giunti(self, posizioni_giunti, timeout=None):
         """Pianifica (soltanto) un moto verso 'posizioni_giunti', allinea la
         traiettoria risultante sui giri interi rispetto allo stato reale del
         robot, e SOLO DOPO la esegue via /execute_trajectory."""
+        if timeout is None:
+            timeout = self._timeout_movimento
         if not self._move_group_client.server_is_ready():
             if not self._move_group_client.wait_for_server(timeout_sec=5.0):
                 return {
@@ -522,7 +536,9 @@ class EsecuzioneMovimento(Node):
 
         result_future = goal_handle.get_result_async()
         rclpy.spin_until_future_complete(self, result_future, timeout_sec=timeout)
-        result = result_future.result().result
+        result, errore = self._risultato_o_timeout(result_future, timeout, 'la pianificazione')
+        if errore is not None:
+            return errore
 
         if result.error_code.val != MoveItErrorCodes.SUCCESS:
             messaggio = f'❌ Pianificazione fallita (codice MoveIt: {result.error_code.val}).'
@@ -553,7 +569,9 @@ class EsecuzioneMovimento(Node):
 
         result_future_exec = goal_handle_exec.get_result_async()
         rclpy.spin_until_future_complete(self, result_future_exec, timeout_sec=timeout)
-        result_exec = result_future_exec.result().result
+        result_exec, errore = self._risultato_o_timeout(result_future_exec, timeout, 'il movimento')
+        if errore is not None:
+            return errore
 
         codice = result_exec.error_code.val
         eseguito = (codice == MoveItErrorCodes.SUCCESS)
@@ -564,8 +582,26 @@ class EsecuzioneMovimento(Node):
         self.get_logger().info(messaggio)
         return {'eseguito': eseguito, 'codice': codice, 'messaggio': messaggio}
 
-    def vai_a_home(self, timeout=20.0):
+    def _risultato_o_timeout(self, result_future, timeout, cosa):
+        """Restituisce (risultato, None) se l'azione si e' conclusa entro il
+        timeout, altrimenti (None, esito_di_errore) con un messaggio chiaro.
+        Senza questo controllo, un movimento piu' lungo del timeout (tipico in
+        una simulazione piu' lenta del tempo reale) causava un AttributeError."""
+        risposta = result_future.result()
+        if risposta is None:
+            messaggio = (
+                f'⏱️ Timeout: {cosa} non si e\' concluso entro {timeout:.0f} s. '
+                'Il robot potrebbe essere ancora in movimento: se serve, aumenta '
+                'il parametro timeout_movimento.'
+            )
+            self.get_logger().error(messaggio)
+            return None, {'eseguito': False, 'codice': None, 'messaggio': messaggio}
+        return risposta.result, None
+
+    def vai_a_home(self, timeout=None):
         """Riporta il robot alla posizione di HOME nello spazio dei giunti."""
+        if timeout is None:
+            timeout = self._timeout_movimento
         self.get_logger().info('--- Rientro in posizione di HOME ---')
         return self._pianifica_esegui_giunti(HOME_JOINTS, timeout)
 
@@ -595,7 +631,8 @@ def main(args=None):
         pass
     finally:
         nodo.destroy_node()
-        rclpy.shutdown()
+        if rclpy.ok():
+            rclpy.shutdown()
 
 
 if __name__ == '__main__':

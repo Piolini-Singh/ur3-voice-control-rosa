@@ -20,7 +20,9 @@ fi
 python3 -m venv --system-site-packages "${VENV_DIR}"
 # shellcheck disable=SC1091
 source "${VENV_DIR}/bin/activate"
-python3 -m pip install --upgrade pip setuptools wheel packaging
+# setuptools<80: newer versions build these packages too, but make pip warn
+# about a conflict with ROS 2 colcon (which never uses this venv).
+python3 -m pip install --upgrade pip wheel packaging "setuptools<80"
 # Exact package set used for the thesis experiments. To get the newest compatible
 # versions instead, run: pip install -r voice_agent/requirements.txt
 python3 -m pip install -r "${REPO_ROOT}/voice_agent/requirements.lock"
