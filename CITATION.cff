@@ -18,7 +18,7 @@ authors:
     given-names: Jaspreet
     affiliation: "University of Brescia"
 version: "v1.0.0"
-date-released: "2026-11-06"
+date-released: "2026-11-20"
 license: Apache-2.0
 repository-code: "https://github.com/Piolini-Singh/ur3-voice-control-rosa"
 keywords:

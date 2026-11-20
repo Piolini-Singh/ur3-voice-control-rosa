@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.0.0 — 2026-11-06
+## v1.0.0 — 2026-11-20
 
 First public release of the code used for the Bachelor's thesis (University of Brescia,
 A.Y. 2025/2026). Behaviour, system prompt and tools are those used in the experiments; the only
