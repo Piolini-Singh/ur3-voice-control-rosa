@@ -5,7 +5,7 @@
 and a ROS 2 Humble / MoveIt 2 pipeline checks reachability before moving the arm — first on a
 Gazebo digital twin, then on the real robot.
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.XXXXXXX.svg)](https://doi.org/10.5281/zenodo.XXXXXXX)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24531682.svg)](https://doi.org/10.5281/zenodo.24531682)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 ![ROS 2 Humble](https://img.shields.io/badge/ROS_2-Humble-22314E?logo=ros)
 ![Python 3.10](https://img.shields.io/badge/Python-3.10-3776AB?logo=python&logoColor=white)
@@ -190,7 +190,7 @@ If you use this work, please cite it (the "Cite this repository" button uses
   year      = {2026},
   publisher = {Zenodo},
   version   = {v1.0.0},
-  doi       = {10.5281/zenodo.XXXXXXX},
+  doi       = {10.5281/zenodo.24531682},
   url       = {https://github.com/Piolini-Singh/ur3-voice-control-rosa}
 }
 ```
