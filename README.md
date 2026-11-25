@@ -198,7 +198,7 @@ If you use this work, please cite it (the "Cite this repository" button uses
 Underlying thesis (Italian): M. Piolini, J. Singh, *Controllo vocale della movimentazione di un
 manipolatore UR3 mediante ROS 2 integrato da IA e algoritmo di elaborazione del linguaggio
 naturale "ROSA"*, Bachelor's thesis in Industrial Automation Engineering, University of Brescia,
-A.Y. 2025/2026. Supervisor: Prof. Riccardo Adamini.
+A.Y. 2025/2026.
 
 ## License
 
@@ -210,5 +210,5 @@ A.Y. 2025/2026. Supervisor: Prof. Riccardo Adamini.
 ## Acknowledgements
 
 Laboratorio di Meccanica Applicata, Department of Mechanical and Industrial Engineering (DIMI),
-University of Brescia, and Prof. Riccardo Adamini. ROSA is developed by NASA JPL; the UR ROS 2
+University of Brescia. ROSA is developed by NASA JPL; the UR ROS 2
 driver, description and simulation packages by Universal Robots and contributors.
